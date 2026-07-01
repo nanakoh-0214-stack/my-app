@@ -20,25 +20,25 @@ app.use(express.urlencoded({ extended: true }));
 
 // トップページ：ユーザー一覧を表示する
 app.get("/", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.render("index", { users });
+  const groups = await prisma.group.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+res.render("index", { groups });
 });
 
-// ユーザー追加：フォームから送られてきた名前を保存する
-app.post("/users", async (req, res) => {
+app.post("/groups", async (req, res) => {
   const name = req.body.name;
-  const age = Number(req.body.age); // 文字列で来るので数値に変換するぞ
-
-  if (isNaN(age)) {
-    res.status(400).send("年齢は数値でなければなりません。");
-    return;
-  }
 
   if (name) {
-    // age も一緒に保存するように指定するのじゃ
-    const newUser = await prisma.user.create({ data: { name, age } });
-    console.log("追加:", newUser);
+    await prisma.group.create({
+      data: {
+        name,
+      },
+    });
   }
+
   res.redirect("/");
 });
 
