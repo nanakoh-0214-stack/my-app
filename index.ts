@@ -27,8 +27,17 @@ app.get("/", async (req, res) => {
 // ユーザー追加：フォームから送られてきた名前を保存する
 app.post("/users", async (req, res) => {
   const name = req.body.name;
+  const age = Number(req.body.age); // 文字列で来るので数値に変換するぞ
+
+  if (isNaN(age)) {
+    res.status(400).send("年齢は数値でなければなりません。");
+    return;
+  }
+
   if (name) {
-    await prisma.user.create({ data: { name } });
+    // age も一緒に保存するように指定するのじゃ
+    const newUser = await prisma.user.create({ data: { name, age } });
+    console.log("追加:", newUser);
   }
   res.redirect("/");
 });
