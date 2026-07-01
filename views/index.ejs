@@ -5,7 +5,11 @@
   <h1>グループ一覧</h1>
   <ul>
     <% groups.forEach(group => { %>
-      <li><%= group.name %></li>
+      <li>
+        <a href="/groups/<%= group.id %>">
+          <%= group.name %>
+        </a>
+      </li>
     <% }) %>
   </ul>
   <h2>グループ追加</h2>

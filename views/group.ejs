@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title><%= group.name %></title>
+</head>
+<body>
+
+<h1><%= group.name %></h1>
+
+<h2>メンバー一覧</h2>
+
+<ul>
+<% group.members.forEach(member => { %>
+    <li><%= member.name %></li>
+<% }) %>
+</ul>
+
+<h2>メンバー追加</h2>
+
+<form action="/groups/<%= group.id %>/members" method="post">
+
+  <input
+    type="text"
+    name="name"
+    placeholder="メンバー名"
+    required
+  >
+
+  <button type="submit">
+    追加
+  </button>
+
+</form>
+
+<a href="/">← グループ一覧へ戻る</a>
+
+</body>
+</html>

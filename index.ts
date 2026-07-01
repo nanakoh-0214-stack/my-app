@@ -28,6 +28,23 @@ app.get("/", async (req, res) => {
 res.render("index", { groups });
 });
 
+app.get("/groups/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  const group = await prisma.group.findUnique({
+    where: { id },
+    include: {
+      members: true,
+    },
+  });
+
+  if (!group) {
+    return res.status(404).send("グループが見つかりません");
+  }
+
+  res.render("group", { group });
+});
+
 app.post("/groups", async (req, res) => {
   const name = req.body.name;
 
@@ -40,6 +57,22 @@ app.post("/groups", async (req, res) => {
   }
 
   res.redirect("/");
+});
+
+app.post("/groups/:id/members", async (req, res) => {
+  const groupId = Number(req.params.id);
+  const name = req.body.name;
+
+  if (name) {
+    await prisma.member.create({
+      data: {
+        name,
+        groupId,
+      },
+    });
+  }
+
+  res.redirect(`/groups/${groupId}`);
 });
 
 app.listen(PORT, () => {
