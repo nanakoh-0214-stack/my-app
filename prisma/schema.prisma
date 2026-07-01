@@ -12,8 +12,49 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id   Int    @id @default(autoincrement())
-  name String
-  age  Int?
+model Group {
+  id       Int       @id @default(autoincrement())
+  name     String
+
+  members  Member[]
+  expenses Expense[]
+}
+
+model Member {
+  id       Int       @id @default(autoincrement())
+  name     String
+
+  groupId  Int
+  group    Group     @relation(fields: [groupId], references: [id])
+
+  paidExpenses Expense[] @relation("Payer")
+  shares       ExpenseShare[]
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  amount      Int
+  description String
+
+  paidAt      DateTime  @default(now())
+
+  groupId     Int
+  group       Group    @relation(fields: [groupId], references: [id])
+
+  payerId     Int
+  payer        Member   @relation("Payer", fields: [payerId], references: [id])
+
+  shares      ExpenseShare[]
+}
+
+model ExpenseShare {
+  id         Int      @id @default(autoincrement())
+
+  expenseId  Int
+  expense    Expense  @relation(fields: [expenseId], references: [id])
+
+  memberId   Int
+  member      Member   @relation(fields: [memberId], references: [id])
+
+  weight     Float
 }
