@@ -119,6 +119,16 @@ app.post("/groups", async (req, res) => {
   res.redirect("/");
 });
 
+app.post("/groups/:id/delete", async (req, res) => {
+  const groupId = Number(req.params.id);
+  await prisma.group.delete({
+    where: {
+      id: groupId,
+    },
+  });
+  res.redirect("/");
+});
+
 app.post("/groups/:id/members", async (req, res) => {
   const groupId = Number(req.params.id);
   const name = req.body.name;
@@ -133,6 +143,21 @@ app.post("/groups/:id/members", async (req, res) => {
   res.redirect(`/groups/${groupId}`);
 });
 
+app.post("/members/:id/delete", async (req, res) => {
+  const memberId = Number(req.params.id);
+  // 削除前に所属グループを取得
+  const member = await prisma.member.findUnique({
+    where: { id: memberId },
+  });
+  if (!member) {
+    return res.status(404).send("メンバーが見つかりません");
+  }
+  await prisma.member.delete({
+    where: { id: memberId },
+  });
+  res.redirect(`/groups/${member.groupId}`);
+});
+
 app.post("/groups/:id/expenses", async (req, res) => {
   const groupId = Number(req.params.id);
   await prisma.expense.create({
@@ -145,6 +170,21 @@ app.post("/groups/:id/expenses", async (req, res) => {
     },
   });
   res.redirect(`/groups/${groupId}`);
+});
+
+app.post("/expenses/:id/delete", async (req, res) => {
+  const expenseId = Number(req.params.id);
+  // 削除前にどのグループの支払いか取得
+  const expense = await prisma.expense.findUnique({
+    where: { id: expenseId },
+  });
+  if (!expense) {
+    return res.status(404).send("支払いが見つかりません");
+  }
+  await prisma.expense.delete({
+    where: { id: expenseId },
+  });
+  res.redirect(`/groups/${expense.groupId}`);
 });
 
 app.listen(PORT, () => {

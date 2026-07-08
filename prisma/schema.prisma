@@ -25,7 +25,7 @@ model Member {
   name     String
 
   groupId  Int
-  group    Group     @relation(fields: [groupId], references: [id])
+  group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   paidExpenses Expense[] @relation("Payer")
   shares       ExpenseShare[]
@@ -39,10 +39,10 @@ model Expense {
   paidAt      DateTime  @default(now())
 
   groupId     Int
-  group       Group    @relation(fields: [groupId], references: [id])
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   payerId     Int
-  payer        Member   @relation("Payer", fields: [payerId], references: [id])
+  payer        Member   @relation("Payer", fields: [payerId], references: [id], onDelete: Cascade)
 
   shares      ExpenseShare[]
 }
@@ -51,10 +51,10 @@ model ExpenseShare {
   id         Int      @id @default(autoincrement())
 
   expenseId  Int
-  expense    Expense  @relation(fields: [expenseId], references: [id])
+  expense    Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
 
   memberId   Int
-  member      Member   @relation(fields: [memberId], references: [id])
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   weight     Float
 }

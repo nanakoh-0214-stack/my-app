@@ -11,7 +11,19 @@
 <h2>メンバー一覧</h2>
 <ul>
 <% group.members.forEach(member => { %>
-    <li><%= member.name %></li>
+  <li>
+    <%= member.name %>
+    <form
+      action="/members/<%= member.id %>/delete"
+      method="post"
+      style="display:inline;"
+      onsubmit="return confirm('このメンバーを削除しますか？このメンバーの支払いも削除されます。');"
+    >
+      <button type="submit">
+        削除
+      </button>
+    </form>
+  </li>
 <% }) %>
 </ul>
 
@@ -40,6 +52,19 @@
 <%= expense.payer.name %>
 <br>
 <%= expense.paidAt.toLocaleString("ja-JP") %>
+<br><br>
+<form
+  action="/expenses/<%= expense.id %>/delete"
+  method="post"
+  style="display:inline;"
+>
+  <button
+    type="submit"
+    onclick="return confirm('この支払いを削除しますか？')"
+  >
+    削除
+  </button>
+</form>
 </li>
 <hr>
 <% }) %>
@@ -115,6 +140,18 @@
   <br><br>
   <button>登録</button>
 </form>
+
+<form
+  action="/groups/<%= group.id %>/delete"
+  method="post"
+  onsubmit="return confirm('このグループを削除しますか？メンバー・支払いもすべて削除されます。');"
+>
+  <button type="submit">
+    グループを削除
+  </button>
+</form>
+
+<br><br>
 
 <a href="/">← グループ一覧へ戻る</a>
 
