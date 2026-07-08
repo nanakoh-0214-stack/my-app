@@ -30,24 +30,28 @@ res.render("index", { groups });
 
 app.get("/groups/:id", async (req, res) => {
   const id = Number(req.params.id);
-
   const group = await prisma.group.findUnique({
     where: { id },
     include: {
       members: true,
+      expenses: {
+        include: {
+          payer: true,
+        },
+        orderBy: {
+          paidAt: "desc",
+        },
+      },
     },
   });
-
   if (!group) {
     return res.status(404).send("グループが見つかりません");
   }
-
   res.render("group", { group });
 });
 
 app.post("/groups", async (req, res) => {
   const name = req.body.name;
-
   if (name) {
     await prisma.group.create({
       data: {
@@ -55,14 +59,12 @@ app.post("/groups", async (req, res) => {
       },
     });
   }
-
   res.redirect("/");
 });
 
 app.post("/groups/:id/members", async (req, res) => {
   const groupId = Number(req.params.id);
   const name = req.body.name;
-
   if (name) {
     await prisma.member.create({
       data: {
@@ -71,7 +73,20 @@ app.post("/groups/:id/members", async (req, res) => {
       },
     });
   }
+  res.redirect(`/groups/${groupId}`);
+});
 
+app.post("/groups/:id/expenses", async (req, res) => {
+  const groupId = Number(req.params.id);
+  await prisma.expense.create({
+    data: {
+      amount: Number(req.body.amount),
+      description: req.body.description,
+      paidAt: new Date(req.body.paidAt),
+      groupId,
+      payerId: Number(req.body.payerId),
+    },
+  });
   res.redirect(`/groups/${groupId}`);
 });
 

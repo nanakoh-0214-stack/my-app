@@ -9,7 +9,6 @@
 <h1><%= group.name %></h1>
 
 <h2>メンバー一覧</h2>
-
 <ul>
 <% group.members.forEach(member => { %>
     <li><%= member.name %></li>
@@ -17,20 +16,68 @@
 </ul>
 
 <h2>メンバー追加</h2>
-
 <form action="/groups/<%= group.id %>/members" method="post">
-
   <input
     type="text"
     name="name"
     placeholder="メンバー名"
     required
   >
-
   <button type="submit">
     追加
   </button>
+</form>
 
+<h2>支払い一覧</h2>
+<ul>
+<% group.expenses.forEach(expense => { %>
+<li>
+<strong><%= expense.description %></strong>
+<br>
+<%= expense.amount %>円
+<br>
+支払者：
+<%= expense.payer.name %>
+<br>
+<%= expense.paidAt.toLocaleString("ja-JP") %>
+</li>
+<hr>
+<% }) %>
+</ul>
+
+<h2>支払い追加</h2>
+<form action="/groups/<%= group.id %>/expenses" method="post">
+  <label>支払者</label>
+  <select name="payerId">
+    <% group.members.forEach(member => { %>
+      <option value="<%= member.id %>">
+        <%= member.name %>
+      </option>
+    <% }) %>
+  </select>
+  <br><br>
+  <label>金額</label>
+  <input
+    type="number"
+    name="amount"
+    required
+  >
+  <br><br>
+  <label>内容</label>
+  <input
+    type="text"
+    name="description"
+    required
+  >
+  <br><br>
+  <label>日時</label>
+  <input
+    type="datetime-local"
+    name="paidAt"
+    required
+  >
+  <br><br>
+  <button>登録</button>
 </form>
 
 <a href="/">← グループ一覧へ戻る</a>
