@@ -47,7 +47,64 @@ app.get("/groups/:id", async (req, res) => {
   if (!group) {
     return res.status(404).send("グループが見つかりません");
   }
-  res.render("group", { group });
+  const totalAmount = group.expenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0
+  );
+  const memberCount = group.members.length;
+  const amountPerPerson =
+    memberCount > 0 ? totalAmount / memberCount : 0;
+  const settlements = group.members.map(member => {
+    const paidAmount = group.expenses
+      .filter(expense => expense.payerId === member.id)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+    return {
+      name: member.name,
+      paidAmount,
+      share: amountPerPerson,
+      balance: paidAmount - amountPerPerson,
+    };
+  });
+  const creditors = settlements
+    .filter(member => member.balance > 0)
+    .map(member => ({
+      name: member.name,
+      balance: member.balance,
+    }));
+  const debtors = settlements
+    .filter(member => member.balance < 0)
+    .map(member => ({
+      name: member.name,
+      balance: -member.balance,
+    }));
+
+  const transfers = [];
+  let i = 0;
+  let j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const amount = Math.min(
+      debtors[i].balance,
+      creditors[j].balance
+    );
+    transfers.push({
+      from: debtors[i].name,
+      to: creditors[j].name,
+      amount,
+    });
+    debtors[i].balance -= amount;
+    creditors[j].balance -= amount;
+    if (debtors[i].balance === 0) i++;
+    if (creditors[j].balance === 0) j++;
+  }
+
+  res.render("group", {
+    group,
+    totalAmount,
+    memberCount,
+    amountPerPerson,
+    settlements,
+    transfers,
+  });
 });
 
 app.post("/groups", async (req, res) => {
