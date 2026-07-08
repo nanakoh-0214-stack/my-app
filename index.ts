@@ -52,39 +52,65 @@ app.get("/groups/:id", async (req, res) => {
   if (!group) {
     return res.status(404).send("グループが見つかりません");
   }
+
   const totalAmount = group.expenses.reduce(
     (sum, expense) => sum + expense.amount,
     0
   );
+
   const memberCount = group.members.length;
-  // const amountPerPerson =
-  //   memberCount > 0 ? totalAmount / memberCount : 0;
-  // const settlements = group.members.map(member => {
-  //   const paidAmount = group.expenses
-  //     .filter(expense => expense.payerId === member.id)
-  //     .reduce((sum, expense) => sum + expense.amount, 0);
-  //   return {
-  //     name: member.name,
-  //     paidAmount,
-  //     share: amountPerPerson,
-  //     balance: paidAmount - amountPerPerson,
-  //   };
-  // });
+
   const balances: Record<number, number> = {};
+
   group.members.forEach(member => {
     balances[member.id] = 0;
   });
+
   group.expenses.forEach(expense => {
-    const participantCount = expense.shares.length;
-    if (participantCount === 0) return;
-    const share = expense.amount / participantCount;
-    // 支払者は全額立て替えている
-    balances[expense.payerId] += expense.amount;
-    // 参加者は自分の負担額を引く
-    expense.shares.forEach(shareInfo => {
-      balances[shareInfo.memberId] -= share;
+    if (expense.shares.length === 0) return;
+
+    const totalWeight = expense.shares.reduce(
+      (sum, shareInfo) => sum + shareInfo.weight,
+      0
+    );
+
+    const amounts = expense.shares.map(shareInfo => {
+      const exactAmount =
+        expense.amount *
+        shareInfo.weight /
+        totalWeight;
+
+      return {
+        memberId: shareInfo.memberId,
+        amount: Math.floor(exactAmount),
+        fraction: exactAmount - Math.floor(exactAmount),
+      };
     });
+
+    // 切り捨てによる不足分
+    let remaining =
+      expense.amount -
+      amounts.reduce((sum, item) => sum + item.amount, 0);
+
+    // 小数部分が大きい順に1円ずつ追加
+    amounts
+      .sort((a, b) => b.fraction - a.fraction)
+      .forEach(item => {
+        if (remaining > 0) {
+          item.amount += 1;
+          remaining--;
+        }
+      });
+
+    // 負担額を反映
+    amounts.forEach(item => {
+      balances[item.memberId] -= item.amount;
+    });
+
+    // 支払者は立て替えた分を加算
+    balances[expense.payerId] += expense.amount;
   });
+
   const settlements = group.members.map(member => ({
     name: member.name,
     paidAmount: group.expenses
@@ -124,8 +150,8 @@ app.get("/groups/:id", async (req, res) => {
     });
     debtors[i].balance -= amount;
     creditors[j].balance -= amount;
-    if (debtors[i].balance === 0) i++;
-    if (creditors[j].balance === 0) j++;
+    if (debtors[i].balance <= 0) i++;
+    if (creditors[j].balance <= 0) j++;
   }
 
   res.render("group", {
@@ -200,6 +226,10 @@ app.post("/groups/:id/expenses", async (req, res) => {
     : req.body.participantIds
       ? [Number(req.body.participantIds)]
       : [];
+  const useWeight = req.body.useWeight === "true";
+  const weights = Array.isArray(req.body.weights)
+    ? req.body.weights.map(Number)
+    : [Number(req.body.weights)];
   await prisma.expense.create({
     data: {
       description,
@@ -208,9 +238,11 @@ app.post("/groups/:id/expenses", async (req, res) => {
       groupId,
       paidAt,
       shares: {
-        create: participantIds.map((id) => ({
+        create: participantIds.map((id, index) => ({
           memberId: id,
-          weight: 1,
+          weight: useWeight
+            ? weights[index]
+            : 1,
         })),
       },
     },

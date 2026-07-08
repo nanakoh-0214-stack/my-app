@@ -138,19 +138,51 @@
     required
   >
   <br><br>
+
+<label>
+  <input
+    type="radio"
+    name="useWeight"
+    value="false"
+    checked
+    onchange="toggleWeight()"
+  >
+  均等割り
+</label>
+<label>
+  <input
+    type="radio"
+    name="useWeight"
+    value="true"
+    onchange="toggleWeight()"
+  >
+  傾斜あり
+</label>
+
   <label>参加者</label>
   <br>
   <% group.members.forEach(member => { %>
-    <label>
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          name="participantIds"
+          value="<%= member.id %>"
+          checked
+        >
+        <%= member.name %>
+      </label>
+
       <input
-        type="checkbox"
-        name="participantIds"
-        value="<%= member.id %>"
-        checked
+        type="number"
+        name="weights"
+        value="1"
+        min="0.1"
+        step="0.1"
+        class="weight-input"
+        disabled
       >
-      <%= member.name %>
-    </label>
-    <br>
+    </div>
   <% }) %>
   <br>
   <button>登録</button>
@@ -169,6 +201,21 @@
 <br><br>
 
 <a href="/">← グループ一覧へ戻る</a>
+
+<script>
+function toggleWeight() {
+  const enabled =
+    document.querySelector(
+      'input[name="useWeight"]:checked'
+    ).value === "true";
+
+  document.querySelectorAll(".weight-input")
+    .forEach(input => {
+      input.disabled = !enabled;
+    });
+}
+toggleWeight();
+</script>
 
 </body>
 </html>
