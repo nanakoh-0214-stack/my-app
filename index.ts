@@ -37,6 +37,11 @@ app.get("/groups/:id", async (req, res) => {
       expenses: {
         include: {
           payer: true,
+          shares: {
+            include: {
+              member: true,
+            },
+          },
         },
         orderBy: {
           paidAt: "desc",
@@ -52,19 +57,41 @@ app.get("/groups/:id", async (req, res) => {
     0
   );
   const memberCount = group.members.length;
-  const amountPerPerson =
-    memberCount > 0 ? totalAmount / memberCount : 0;
-  const settlements = group.members.map(member => {
-    const paidAmount = group.expenses
-      .filter(expense => expense.payerId === member.id)
-      .reduce((sum, expense) => sum + expense.amount, 0);
-    return {
-      name: member.name,
-      paidAmount,
-      share: amountPerPerson,
-      balance: paidAmount - amountPerPerson,
-    };
+  // const amountPerPerson =
+  //   memberCount > 0 ? totalAmount / memberCount : 0;
+  // const settlements = group.members.map(member => {
+  //   const paidAmount = group.expenses
+  //     .filter(expense => expense.payerId === member.id)
+  //     .reduce((sum, expense) => sum + expense.amount, 0);
+  //   return {
+  //     name: member.name,
+  //     paidAmount,
+  //     share: amountPerPerson,
+  //     balance: paidAmount - amountPerPerson,
+  //   };
+  // });
+  const balances: Record<number, number> = {};
+  group.members.forEach(member => {
+    balances[member.id] = 0;
   });
+  group.expenses.forEach(expense => {
+    const participantCount = expense.shares.length;
+    if (participantCount === 0) return;
+    const share = expense.amount / participantCount;
+    // 支払者は全額立て替えている
+    balances[expense.payerId] += expense.amount;
+    // 参加者は自分の負担額を引く
+    expense.shares.forEach(shareInfo => {
+      balances[shareInfo.memberId] -= share;
+    });
+  });
+  const settlements = group.members.map(member => ({
+    name: member.name,
+    paidAmount: group.expenses
+      .filter(expense => expense.payerId === member.id)
+      .reduce((sum, expense) => sum + expense.amount, 0),
+    balance: balances[member.id],
+  }));
   const creditors = settlements
     .filter(member => member.balance > 0)
     .map(member => ({
@@ -78,7 +105,11 @@ app.get("/groups/:id", async (req, res) => {
       balance: -member.balance,
     }));
 
-  const transfers = [];
+  const transfers: {
+    from: string;
+    to: string;
+    amount: number;
+  }[] = [];
   let i = 0;
   let j = 0;
   while (i < debtors.length && j < creditors.length) {
@@ -101,7 +132,7 @@ app.get("/groups/:id", async (req, res) => {
     group,
     totalAmount,
     memberCount,
-    amountPerPerson,
+    // amountPerPerson,
     settlements,
     transfers,
   });
@@ -160,13 +191,28 @@ app.post("/members/:id/delete", async (req, res) => {
 
 app.post("/groups/:id/expenses", async (req, res) => {
   const groupId = Number(req.params.id);
+  const description = req.body.description;
+  const amount = Number(req.body.amount);
+  const payerId = Number(req.body.payerId);
+  const paidAt = new Date(req.body.paidAt);
+  const participantIds = Array.isArray(req.body.participantIds)
+    ? req.body.participantIds.map(Number)
+    : req.body.participantIds
+      ? [Number(req.body.participantIds)]
+      : [];
   await prisma.expense.create({
     data: {
-      amount: Number(req.body.amount),
-      description: req.body.description,
-      paidAt: new Date(req.body.paidAt),
+      description,
+      amount,
+      payerId,
       groupId,
-      payerId: Number(req.body.payerId),
+      paidAt,
+      shares: {
+        create: participantIds.map((id) => ({
+          memberId: id,
+          weight: 1,
+        })),
+      },
     },
   });
   res.redirect(`/groups/${groupId}`);

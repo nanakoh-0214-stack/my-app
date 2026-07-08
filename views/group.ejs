@@ -51,6 +51,9 @@
 支払者：
 <%= expense.payer.name %>
 <br>
+参加者：
+<%= expense.shares.map(share => share.member.name).join("、") %>
+<br>
 <%= expense.paidAt.toLocaleString("ja-JP") %>
 <br><br>
 <form
@@ -72,20 +75,17 @@
 
 <h2>精算状況</h2>
 <p>支払い合計：<%= totalAmount %> 円</p>
-<p>参加人数：<%= memberCount %> 人</p>
-<p>一人当たり：<%= amountPerPerson %> 円</p>
+<p>メンバー数：<%= memberCount %> 人</p>
 <table border="1">
 <tr>
   <th>名前</th>
   <th>支払額</th>
-  <th>負担額</th>
   <th>差額</th>
 </tr>
 <% settlements.forEach(member => { %>
 <tr>
 <td><%= member.name %></td>
 <td><%= member.paidAmount %> 円</td>
-<td><%= member.share %> 円</td>
 <td>
 <%= member.balance %> 円
 </td>
@@ -138,6 +138,21 @@
     required
   >
   <br><br>
+  <label>参加者</label>
+  <br>
+  <% group.members.forEach(member => { %>
+    <label>
+      <input
+        type="checkbox"
+        name="participantIds"
+        value="<%= member.id %>"
+        checked
+      >
+      <%= member.name %>
+    </label>
+    <br>
+  <% }) %>
+  <br>
   <button>登録</button>
 </form>
 

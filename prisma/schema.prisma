@@ -56,5 +56,7 @@ model ExpenseShare {
   memberId   Int
   member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  weight     Float
+  weight     Float @default(1)
+
+  @@unique([expenseId, memberId])
 }
