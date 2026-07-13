@@ -1,28 +1,25 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head><meta charset="UTF-8"><title>グループ一覧</title></head>
-<body>
-  <h1>グループ一覧</h1>
-  <ul>
-    <% groups.forEach(group => { %>
-      <li>
-        <a href="/groups/<%= group.id %>">
-          <%= group.name %>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
-  <h2>グループ追加</h2>
-  <form action="/groups" method="post">
-    <input
-      type="text"
-      name="name"
-      placeholder="グループ名を入力"
-      required
-    >
-    <button type="submit">
-      追加
-    </button>
-  </form>
-</body>
-</html>
+<%- include("partials/header", { title: "グループ一覧" }) %>
+
+<h1>グループ一覧</h1>
+
+<ul>
+  <% groups.forEach(group => { %>
+    <li>
+      <a href="/groups/<%= group.id %>"><%= group.name %></a>
+    </li>
+  <% }) %>
+</ul>
+
+<h2>グループ追加</h2>
+
+<form action="/groups" method="post">
+  <input
+    type="text"
+    name="name"
+    placeholder="グループ名を入力"
+    required
+  >
+  <button type="submit">追加</button>
+</form>
+
+<%- include("partials/footer") %>

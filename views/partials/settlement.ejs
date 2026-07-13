@@ -1,0 +1,28 @@
+<h2>精算状況</h2>
+<p>支払い合計：<%= totalAmount %> 円</p>
+<p>メンバー数：<%= memberCount %> 人</p>
+<table border="1">
+  <tr>
+    <th>名前</th>
+    <th>支払額</th>
+    <th>差額</th>
+  </tr>
+  <% settlements.forEach(member => { %>
+    <tr>
+      <td><%= member.name %></td>
+      <td><%= member.paidAmount %> 円</td>
+      <td><%= member.balance %> 円</td>
+    </tr>
+  <% }) %>
+</table>
+
+<h2>精算結果</h2>
+<ul>
+  <% transfers.forEach(transfer => { %>
+    <li>
+      <strong><%= transfer.from %></strong> →
+      <strong><%= transfer.to %></strong> ：
+      <%= transfer.amount %> 円
+    </li>
+  <% }) %>
+</ul>

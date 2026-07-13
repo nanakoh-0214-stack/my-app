@@ -1,0 +1,25 @@
+<h2>支払い一覧</h2>
+
+<ul>
+  <% group.expenses.forEach(expense => { %>
+    <li>
+      <strong><%= expense.description %></strong><br>
+      <%= expense.amount %>円<br>
+      支払者：<%= expense.payer.name %><br>
+      参加者：<%= expense.shares.map(share => share.member.name).join("、") %><br>
+      <%= expense.paidAt.toLocaleString("ja-JP") %>
+      <br><br>
+      <form
+        action="/expenses/<%= expense.id %>/delete"
+        method="post"
+        class="inline-form"
+      >
+        <button
+          type="submit"
+          onclick="return confirm('この支払いを削除しますか？')"
+        > 削除 </button>
+      </form>
+    </li>
+    <hr>
+  <% }) %>
+</ul>

@@ -1,0 +1,9 @@
+/* ===== 共通 ===== */
+body {
+  font-family: sans-serif;
+}
+
+/* ===== フォーム ===== */
+.inline-form {
+  display: inline;
+}
