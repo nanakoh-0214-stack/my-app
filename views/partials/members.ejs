@@ -1,19 +1,29 @@
-<h2>メンバー一覧</h2>
-<ul>
-<% group.members.forEach(member => { %>
-  <li>
-    <%= member.name %>
-    <form
-      action="/members/<%= member.id %>/delete"
-      method="post"
-      class="inline-form"
-      onsubmit="return confirm('このメンバーを削除しますか？このメンバーの支払いも削除されます。');"
-    >
-    	<button type="submit"> 削除 </button>
-    </form>
-  </li>
-<% }) %>
-</ul>
+<details class="member-section">
+  <summary>
+    メンバー一覧（<%= group.members.length %>人）
+  </summary>
+
+  <ul class="member-list">
+    <% group.members.forEach(member => { %>
+      <li class="member-item">
+        <span class="member-name">
+          <%= member.name %>
+        </span>
+
+        <form
+          action="/members/<%= member.id %>/delete"
+          method="post"
+          class="inline-form"
+          onsubmit="return confirm('このメンバーを削除しますか？このメンバーの支払いも削除されます。');"
+        >
+          <button type="submit" class="delete-btn">
+            削除
+          </button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</details>
 
 <h2>メンバー追加</h2>
 <form action="/groups/<%= group.id %>/members" method="post">
@@ -23,5 +33,5 @@
     placeholder="メンバー名"
     required
   >
-  <button type="submit"> 追加 </button>
+  <button type="submit">追加</button>
 </form>

@@ -2,14 +2,27 @@
   title: group.name
 }) %>
 
+<a href="/">← グループ一覧へ戻る</a>
+
 <h1><%= group.name %></h1>
 
-<%- include("partials/members") %>
+<section class="section-card">
+  <%- include("partials/members") %>
+</section>
 
-<%- include("partials/expenses") %>
+<a
+  href="/groups/<%= group.id %>/expenses/new"
+  class="primary-action-btn"
+>
+  ＋ 支払いを追加
+</a>
 
-<%- include("partials/settlement") %>
+<section class="section-card">
+  <%- include("partials/expenses") %>
+</section>
 
-<%- include("partials/expenseForm") %>
+<section class="section-card">
+  <%- include("partials/settlement") %>
+</section>
 
 <%- include("partials/footer") %>

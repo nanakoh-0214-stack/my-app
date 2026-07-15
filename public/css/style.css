@@ -1,9 +1,584 @@
 /* ===== 共通 ===== */
 body {
-  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  background-color: #f7f8fa;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ===== 見出し ===== */
+h1 {
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+/* ===== ボタン ===== */
+button {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #4f7cff;
+  color: white;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
 }
 
 /* ===== フォーム ===== */
+input,
+select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/* ===== リンク ===== */
+a {
+  color: #4f7cff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== フォーム配置 ===== */
+form {
+  margin-bottom: 16px;
+}
+
+/* ===== インラインフォーム ===== */
 .inline-form {
   display: inline;
+}
+
+/* ===== グループ一覧 ===== */
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.group-card:hover {
+  background-color: #f0f4ff;
+}
+
+.group-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== 開くボタン ===== */
+.open-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #4f7cff;
+  color: white;
+  text-decoration: none;
+}
+
+.open-btn:hover {
+  background-color: #3d67d8;
+  text-decoration: none;
+}
+
+/* ===== 削除ボタン ===== */
+.delete-btn {
+  background-color: #ef5350;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+/* ===== グループ追加 ===== */
+.add-section {
+  margin-top: 48px;
+}
+
+.add-form {
+  display: flex;
+  gap: 12px;
+}
+
+/* ===== グループ詳細カード ===== */
+.section-card {
+  background-color: white;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== 戻るリンク ===== */
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* ===== メンバー一覧 ===== */
+.member-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.member-section summary {
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+  user-select: none;
+  margin-bottom: 16px;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #eee;
+}
+
+.member-item:first-child {
+  border-top: none;
+}
+
+.member-name {
+  font-size: 16px;
+}
+
+/* ===== 支払い追加ボタン ===== */
+.primary-action-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  margin: 24px 0;
+  text-align: center;
+  background-color: #4f7cff;
+  color: white;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.primary-action-btn:hover {
+  background-color: #3d67d8;
+  text-decoration: none;
+}
+
+/* ===== 支払い追加フォーム ===== */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* テキスト入力・数値入力・日時入力・セレクトのみ横幅100% */
+.form-group input:not([type="radio"]):not([type="checkbox"]),
+.form-group select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== ラジオボタン ===== */
+.radio-group {
+  display: flex;
+  gap: 24px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: normal;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+/* ===== 参加者一覧 ===== */
+.participant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.participant-item {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.participant-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+.weight-section {
+  margin-top: 10px;
+}
+
+.weight-input {
+  width: 100%;
+}
+
+/* ===== 非表示 ===== */
+.hidden {
+  display: none;
+}
+
+/* ===== 登録ボタン ===== */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  margin-top: 24px;
+}
+
+/* ===== 支払い一覧 ===== */
+.expense-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.expense-section summary {
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+  user-select: none;
+  margin-bottom: 16px;
+}
+
+.expense-list {
+  margin-top: 20px;
+}
+
+.expense-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.expense-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.expense-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4f7cff;
+}
+
+.expense-info {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.expense-delete-form {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* ===== 精算状況 ===== */
+.settlement-summary {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  flex: 1;
+  background: #f5f7ff;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.summary-label {
+  display: block;
+  color: #666;
+  font-size: 14px;
+}
+
+.summary-value {
+  display: block;
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.settlement-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.settlement-table tbody tr:hover {
+  background: #f7f9ff;
+}
+
+.settlement-table th {
+  background: #f5f7ff;
+}
+
+.settlement-table th,
+.settlement-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.settlement-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.plus {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.minus {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.zero {
+  color: #777;
+}
+
+/* ===== 精算結果 ===== */
+.transfer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transfer-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px;
+  border-radius: 12px;
+  background: white;
+  border-left: 6px solid #ff9800;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.transfer-members {
+  font-size: 16px;
+}
+
+.transfer-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4f7cff;
+}
+
+/* ===== カードホバー ===== */
+.group-card,
+.expense-card,
+.transfer-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.group-card:hover,
+.expense-card:hover,
+.transfer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== details ===== */
+details summary {
+  transition: color 0.2s;
+}
+
+details summary:hover {
+  color: #4f7cff;
+}
+
+details summary::marker {
+  color: #4f7cff;
+}
+
+/* ===================================
+   レスポンシブ対応（スマートフォン）
+=================================== */
+
+@media (max-width: 768px) {
+
+  /* 全体余白 */
+  .container {
+    padding: 20px 16px;
+  }
+
+  /* 見出し */
+  h1 {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+
+  /* グループカード */
+  .card-actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .open-btn,
+  .delete-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* グループ追加 */
+  .add-form {
+    flex-direction: column;
+  }
+
+  .add-form input,
+  .add-form button {
+    width: 100%;
+  }
+
+  /* メンバー */
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* 支払い追加 */
+  .participant-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* 支払いカード */
+  .expense-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* 精算状況 */
+  .settlement-summary {
+    flex-direction: column;
+  }
+
+  /* テーブル */
+  .settlement-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* 精算結果 */
+  .transfer-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .transfer-members {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .transfer-amount {
+    align-self: flex-end;
+    font-size: 24px;
+  }
+
+  /* ボタン */
+  button {
+    width: 100%;
+  }
+
 }

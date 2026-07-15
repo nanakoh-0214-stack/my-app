@@ -4,6 +4,20 @@ import { prisma } from "../lib/prisma";
 const router = Router();
 
 // 支払いの追加
+router.get("/groups/:id/expenses/new", async (req, res) => {
+  const groupId = Number(req.params.id);
+  const group = await prisma.group.findUnique({
+    where: { id: groupId },
+    include: {
+      members: true,
+    },
+  });
+  if (!group) {
+    return res.status(404).send("グループが見つかりません");
+  }
+  res.render("expenseForm", { group });
+});
+
 router.post("/groups/:id/expenses", async (req, res) => {
   const groupId = Number(req.params.id);
   const description = req.body.description;

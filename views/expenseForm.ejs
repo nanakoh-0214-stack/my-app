@@ -1,0 +1,13 @@
+<%- include("partials/header", { title: "支払い追加" }) %>
+
+<a href="/groups/<%= group.id %>" class="back-link">
+  ← グループへ戻る
+</a>
+
+<h1>支払い追加</h1>
+
+<section class="section-card">
+  <%- include("partials/expenseForm") %>
+</section>
+
+<%- include("partials/footer") %>

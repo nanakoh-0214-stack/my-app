@@ -1,83 +1,122 @@
 <h2>支払い追加</h2>
 
 <form action="/groups/<%= group.id %>/expenses" method="post">
-  <label>支払者</label>
-  <select name="payerId">
-    <% group.members.forEach(member => { %>
-      <option value="<%= member.id %>"><%= member.name %></option>
-    <% }) %>
-  </select> <br><br>
 
-  <label>金額</label>
-  <input type="number" name="amount" required> <br><br>
+  <div class="form-group">
+    <label for="payerId">支払者</label>
+    <select id="payerId" name="payerId">
+      <% group.members.forEach(member => { %>
+        <option value="<%= member.id %>">
+          <%= member.name %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
 
-  <label>内容</label>
-  <input type="text" name="description" required> <br><br>
-
-  <label>日時</label>
-  <input type="datetime-local" name="paidAt" required> <br><br>
-
-  <!-- 割り勘方法 -->
-  <label>
+  <div class="form-group">
+    <label for="amount">金額（円）</label>
     <input
-      type="radio"
-      name="useWeight"
-      value="false"
-      checked
-      onchange="toggleWeight()"
+      id="amount"
+      type="number"
+      name="amount"
+      placeholder="例：3000"
+      required
     >
-    均等割り
-  </label>
-  <label>
-    <input
-      type="radio"
-      name="useWeight"
-      value="true"
-      onchange="toggleWeight()"
-    >
-    傾斜あり
-  </label> <br><br>
+  </div>
 
-  <label>参加者</label>
-  <% group.members.forEach(member => { %>
-    <div>
+  <div class="form-group">
+    <label for="description">内容</label>
+    <input
+      id="description"
+      type="text"
+      name="description"
+      placeholder="例：居酒屋"
+      required
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="paidAt">日時</label>
+    <input
+      id="paidAt"
+      type="datetime-local"
+      name="paidAt"
+      required
+    >
+  </div>
+
+  <div class="form-group">
+    <label>割り勘方法</label>
+
+    <div class="radio-group">
       <label>
         <input
-          type="checkbox"
-          name="participantIds"
-          value="<%= member.id %>"
+          type="radio"
+          name="useWeight"
+          value="false"
           checked
+          onchange="toggleWeight()"
         >
-        <%= member.name %>
+        均等割り
       </label>
 
-      <input
-        type="number"
-        name="weights"
-        value="1"
-        min="0.1"
-        step="0.1"
-        class="weight-input"
-        disabled
-      >
+      <label>
+        <input
+          type="radio"
+          name="useWeight"
+          value="true"
+          onchange="toggleWeight()"
+        >
+        傾斜あり
+      </label>
     </div>
-  <% }) %> <br>
+  </div>
 
-  <button type="submit">登録</button>
+  <div class="form-group">
+    <label>参加者</label>
+
+    <div class="participant-grid">
+
+      <% group.members.forEach(member => { %>
+
+        <div class="participant-item">
+
+          <label class="participant-checkbox">
+            <input
+              type="checkbox"
+              name="participantIds"
+              value="<%= member.id %>"
+              checked
+            >
+            <span><%= member.name %></span>
+          </label>
+
+          <div class="weight-section hidden">
+            <input
+              type="number"
+              name="weights"
+              value="1"
+              min="0.1"
+              step="0.1"
+              class="weight-input"
+              disabled
+            >
+          </div>
+
+        </div>
+
+      <% }) %>
+
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    class="submit-btn"
+  >
+    登録
+  </button>
+
 </form>
-
-
-<!-- グループ削除 -->
-<form
-  action="/groups/<%= group.id %>/delete"
-  method="post"
-  onsubmit="return confirm('このグループを削除しますか？メンバー・支払いもすべて削除されます。');"
->
-  <button type="submit">グループを削除</button>
-</form>
-
-<br><br>
-
-<a href="/">← グループ一覧へ戻る</a>
 
 <script src="/js/group.js"></script>

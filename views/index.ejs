@@ -2,24 +2,47 @@
 
 <h1>グループ一覧</h1>
 
-<ul>
+<div class="group-list">
   <% groups.forEach(group => { %>
-    <li>
-      <a href="/groups/<%= group.id %>"><%= group.name %></a>
-    </li>
+    <div class="group-card">
+
+      <div class="group-name">
+        <%= group.name %>
+      </div>
+
+      <div class="card-actions">
+        <a href="/groups/<%= group.id %>" class="open-btn">
+          開く
+        </a>
+
+        <form
+          action="/groups/<%= group.id %>/delete"
+          method="post"
+          class="inline-form"
+          onsubmit="return confirm('このグループを削除しますか？');"
+        >
+          <button type="submit" class="delete-btn">
+            削除
+          </button>
+        </form>
+      </div>
+
+    </div>
   <% }) %>
-</ul>
+</div>
 
-<h2>グループ追加</h2>
+<section class="add-section">
+  <h2>グループ追加</h2>
 
-<form action="/groups" method="post">
-  <input
-    type="text"
-    name="name"
-    placeholder="グループ名を入力"
-    required
-  >
-  <button type="submit">追加</button>
-</form>
+  <form action="/groups" method="post" class="add-form">
+    <input
+      type="text"
+      name="name"
+      placeholder="グループ名を入力"
+      required
+    >
+    <button type="submit">追加</button>
+  </form>
+</section>
 
 <%- include("partials/footer") %>
