@@ -1,6 +1,7 @@
 function toggleWeight() {
-  const enabled =
-    document.querySelector('input[name="useWeight"]:checked').value === "true";
+  const selected = document.querySelector('input[name="useWeight"]:checked');
+  if (!selected) return;
+  const enabled = selected.value === "true";
 
   // 重み入力欄の表示・非表示
   document.querySelectorAll(".weight-section").forEach(section => {
@@ -13,10 +14,11 @@ function toggleWeight() {
   });
 }
 
-// 現在日時を設定
+// 現在日時を設定（追加画面のみ）
 function setCurrentDateTime() {
   const paidAt = document.getElementById("paidAt");
 
+  // 編集画面では値が入っているので何もしない
   if (!paidAt || paidAt.value) return;
 
   const now = new Date();

@@ -1,0 +1,6 @@
+<%- include("expenseForm", {
+    group,
+    expense,
+    formAction: `/expenses/${expense.id}/edit`,
+    isEdit: true
+}) %>

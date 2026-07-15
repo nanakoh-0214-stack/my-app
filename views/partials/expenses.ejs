@@ -6,11 +6,14 @@
 
   <div class="expense-list">
     <% group.expenses.forEach(expense => { %>
+
       <div class="expense-card">
+
         <div class="expense-header">
           <span class="expense-title">
             <%= expense.description %>
           </span>
+
           <span class="expense-amount">
             ¥<%= expense.amount.toLocaleString() %>
           </span>
@@ -33,20 +36,34 @@
           <%= expense.paidAt.toLocaleString("ja-JP") %>
         </div>
 
-        <form
-          action="/expenses/<%= expense.id %>/delete"
-          method="post"
-          class="expense-delete-form"
-          onsubmit="return confirm('この支払いを削除しますか？');"
-        >
-          <button
-            type="submit"
-            class="delete-btn"
+        <div class="expense-actions">
+
+          <a
+            href="/expenses/<%= expense.id %>/edit"
+            class="edit-btn"
           >
-            削除
-          </button>
-        </form>
+            編集
+          </a>
+
+          <form
+            action="/expenses/<%= expense.id %>/delete"
+            method="post"
+            class="expense-delete-form"
+            onsubmit="return confirm('この支払いを削除しますか？');"
+          >
+            <button
+              type="submit"
+              class="delete-btn"
+            >
+              削除
+            </button>
+          </form>
+
+        </div>
+
       </div>
+
     <% }) %>
   </div>
+
 </details>

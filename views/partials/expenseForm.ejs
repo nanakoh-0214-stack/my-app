@@ -1,24 +1,31 @@
-<h2>支払い追加</h2>
+<h2><%= isEdit ? "支払い編集" : "支払い追加" %></h2>
 
-<form action="/groups/<%= group.id %>/expenses" method="post">
+<form action="<%= formAction %>" method="post">
 
   <div class="form-group">
     <label for="payerId">支払者</label>
+
     <select id="payerId" name="payerId">
       <% group.members.forEach(member => { %>
-        <option value="<%= member.id %>">
+
+        <option
+          value="<%= member.id %>"
+          <%= expense && member.id === expense.payerId ? "selected" : "" %>>
           <%= member.name %>
         </option>
+
       <% }) %>
     </select>
   </div>
 
   <div class="form-group">
     <label for="amount">金額（円）</label>
+
     <input
       id="amount"
       type="number"
       name="amount"
+      value="<%= expense ? expense.amount : '' %>"
       placeholder="例：3000"
       required
     >
@@ -26,10 +33,12 @@
 
   <div class="form-group">
     <label for="description">内容</label>
+
     <input
       id="description"
       type="text"
       name="description"
+      value="<%= expense ? expense.description : '' %>"
       placeholder="例：居酒屋"
       required
     >
@@ -37,10 +46,12 @@
 
   <div class="form-group">
     <label for="paidAt">日時</label>
+
     <input
       id="paidAt"
       type="datetime-local"
       name="paidAt"
+      value="<%= expense ? expense.paidAtLocal : '' %>"
       required
     >
   </div>
@@ -49,12 +60,13 @@
     <label>割り勘方法</label>
 
     <div class="radio-group">
+
       <label>
         <input
           type="radio"
           name="useWeight"
           value="false"
-          checked
+          <%= !expense || !expense.useWeight ? "checked" : "" %>
           onchange="toggleWeight()"
         >
         均等割り
@@ -65,42 +77,55 @@
           type="radio"
           name="useWeight"
           value="true"
+          <%= expense && expense.useWeight ? "checked" : "" %>
           onchange="toggleWeight()"
         >
         傾斜あり
       </label>
+
     </div>
   </div>
 
   <div class="form-group">
+
     <label>参加者</label>
 
     <div class="participant-grid">
 
       <% group.members.forEach(member => { %>
 
+        <% const share = expense
+          ? expense.shares.find(s => s.memberId === member.id)
+          : null;
+        %>
+
         <div class="participant-item">
 
           <label class="participant-checkbox">
+
             <input
               type="checkbox"
               name="participantIds"
               value="<%= member.id %>"
-              checked
+              <%= !expense || share ? "checked" : "" %>
             >
+
             <span><%= member.name %></span>
+
           </label>
 
-          <div class="weight-section hidden">
+          <div class="weight-section <%= expense && expense.useWeight ? "" : "hidden" %>">
+
             <input
               type="number"
-              name="weights"
-              value="1"
+              name="weights[<%= member.id %>]"
+              value="<%= share ? share.weight : 1 %>"
               min="0.1"
               step="0.1"
               class="weight-input"
-              disabled
+              <%= expense && expense.useWeight ? "" : "disabled" %>
             >
+
           </div>
 
         </div>
@@ -108,13 +133,14 @@
       <% }) %>
 
     </div>
+
   </div>
 
   <button
     type="submit"
     class="submit-btn"
   >
-    登録
+    <%= isEdit ? "更新" : "登録" %>
   </button>
 
 </form>

@@ -125,19 +125,6 @@ form {
   text-decoration: none;
 }
 
-/* ===== 削除ボタン ===== */
-.delete-btn {
-  background-color: #ef5350;
-  transition:
-    background-color 0.2s,
-    transform 0.2s;
-}
-
-.delete-btn:hover {
-  background-color: #d32f2f;
-  transform: scale(1.05);
-}
-
 /* ===== グループ追加 ===== */
 .add-section {
   margin-top: 48px;
@@ -581,4 +568,54 @@ details summary::marker {
     width: 100%;
   }
 
+}
+
+/* ==== 編集・削除ボタン ==== */
+.expense-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-btn,
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 72px;
+  height: 38px;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* 編集 */
+.edit-btn {
+  background: #2563eb;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.edit-btn:hover {
+  background: #1d4ed8;
+}
+
+/* 削除 */
+.delete-btn {
+  background: #dc2626;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
 }
